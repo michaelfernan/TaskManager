@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # -------------------- 1. MongoDB Service --------------------
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_task_manager
+    ports:
+      - 27017:27017 
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: taskuser
+      MONGO_INITDB_ROOT_PASSWORD: taskpass 
+    restart: always
+  # -------------------- 2. NestJS Backend Service --------------------
+  backend:
+    build:
+      context: ./backend 
+    container_name: nestjs_task_backend
+    ports:
+      - 3000:3000 
+    environment:
+      DATABASE_URL: mongodb://taskuser:taskpass@mongodb:27017/task_db?authSource=admin
+    depends_on:
+      - mongodb 
+    volumes:
+      - ./backend:/usr/src/app 
+      - /usr/src/app/node_modules 
+    working_dir: /usr/src/app
+    command: npm run start:dev 
+    restart: always
+
+  # -------------------- 3. Angular Frontend Service --------------------
+  frontend:
+    build:
+      context: ./frontend 
+    container_name: angular_task_frontend
+    ports:
+      - 4200:4200 
+    volumes:
+      - ./frontend:/usr/src/app 
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: npm start 
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  mongo-data: 
