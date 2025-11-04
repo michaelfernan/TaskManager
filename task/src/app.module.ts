@@ -1,4 +1,3 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -18,10 +17,10 @@ import { ObjectIdScalar } from './common/mongo-id.scalar';
       playground: true,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: async () => ormconfig, // opções do DataSource
-      dataSourceFactory: async () => dataSource.initialize(), // instancia e conecta
+      useFactory: async () => ormconfig,
+      dataSourceFactory: async () => dataSource.initialize(),
     }),
-    TasksModule, // <- depende do TypeOrmModule acima
+    TasksModule, 
   ],
   providers: [ObjectIdScalar],
 })

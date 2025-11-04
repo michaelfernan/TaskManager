@@ -1,100 +1,247 @@
- .header {
+/* /home/michael/Área de Trabalho/tizaa/frontend/src/app/features/tasks/task-list.component.css */
+
+/* --- Variáveis de Cores (Paleta Delicada - Cores de Destaque Sutil) --- */
+:root {
+  --color-primary: #86b4e7; /* Azul Suave */
+  --color-success: #a3e0c0; /* Verde Pastel para Concluir */
+  --color-neutral: #c4c4c4; /* Cinza Suave para Reabrir */
+  --color-danger: #f7a0a0; /* Vermelho Pastel para Excluir */
+  --color-edit: #ffeabf; /* Amarelo/Laranja Pastel para Editar */
+  --color-text-dark: #495057;
+  --color-text-light: #fff;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Estilos Gerais de Layout --- */
+.main-container {
+  max-width: 900px; /* Limita a largura para melhor leitura */
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, sans-serif;
+}
+
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef; /* Borda mais fina */
 }
 
+h2 {
+  font-weight: 300; /* Fonte mais leve */
+  color: var(--color-text-dark);
+}
+
+/* --- Botões Principais (Clean) --- */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-light);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px; /* Botão arredondado */
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #6a9bdc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Painel de Controles/Filtros (Clean) --- */
+.controls-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: var(--shadow-light);
+}
+
+.control-select {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  font-size: 14px;
+  color: var(--color-text-dark);
+}
+
+/* --- Lista de Tarefas (Delicada) --- */
 .task-list {
   list-style: none;
   padding: 0;
 }
 
 .task-card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 10px;
+  background: white;
+  border-radius: 15px; /* Bordas mais suaves */
+  padding: 25px; /* Mais espaço interno */
+  margin-bottom: 15px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  box-shadow: var(--shadow-light);
+  border-left: 5px solid var(--color-primary); /* Linha de destaque suave */
+  transition: all 0.2s ease-in-out;
 }
 
-.badge {
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  margin-left: 8px;
+.task-card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.task-card.is-done {
+  background-color: #f7f9fc;
+  border-left: 5px solid var(--color-neutral);
+  opacity: 0.8;
+}
+
+.task-title {
+  font-size: 1.2em;
   font-weight: 500;
+  margin-bottom: 5px;
+  color: var(--color-text-dark);
 }
 
-/* Estilos de Prioridade */
-.badge.low {
-  background: #c8f7c5;
-  /* Verde claro */
+.task-card.is-done .task-title {
+  text-decoration: line-through;
+  color: #adb5bd;
 }
 
-.badge.medium {
-  background: #fff6c5;
-  /* Amarelo claro */
+.task-description {
+  color: #88929b;
+  font-size: 0.9em;
+  margin-bottom: 10px;
 }
 
-.badge.high {
-  background: #f7c5c5;
-  /* Vermelho claro */
-}
-
-/* Estilos de Status (Novo) */
-.badge.done-status {
-  background: #d4edda;
-  /* Verde sutil */
-  color: #155724;
-}
-
-.badge.pending-status {
-  background: #ffeeba;
-  /* Amarelo sutil */
-  color: #856404;
-}
-
-.actions button {
-  margin-left: 6px;
-}
-
-/* Estilos para o bloco de Controles/Filtros (Novo) */
-.controls {
+.task-meta {
   display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  border: 1px solid #e9ecef;
+  gap: 12px;
+  align-items: center;
+  margin-top: 5px;
 }
 
-.controls select,
-.controls button {
-  padding: 8px 12px;
+.creation-date {
+  font-size: 0.75em;
+  color: #adb5bd;
+}
+
+/* --- Badges (Cores Pastel) --- */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Prioridade */
+.badge.low {
+  background-color: #e6f6ee;
+  color: #387652;
+}
+.badge.medium {
+  background-color: #fff7e6;
+  color: #9a6700;
+}
+.badge.high {
+  background-color: #fcebeb;
+  color: #9a3333;
+}
+
+/* Status */
+.badge.done {
+  background-color: var(--color-success); /* Verde claro */
+  color: #1e6e44;
+}
+.badge.pending {
+  background-color: var(--color-danger); /* Vermelho claro */
+  color: #932c2c;
+}
+
+/* --- Botões de Ação (Coloridos e Delicados) --- */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  padding: 8px 15px;
+  border: none; /* Remove a borda para um look mais clean */
   border-radius: 8px;
-  border: 1px solid #ced4da;
-  background-color: #fff;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
-.controls select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-  outline: none;
+/* 1. Botão Principal (Marcar Concluída / Reabrir) - Sólido */
+.btn-success {
+  background-color: var(--color-success);
+  color: #1e6e44; /* Texto escuro no fundo pastel */
+}
+.btn-success:hover {
+  background-color: #88d4a9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header>button {
-  background: #28a745;
-  color: white;
-  font-weight: bold;
+.btn-neutral { /* Reabrir */
+  background-color: var(--color-neutral);
+  color: var(--color-text-dark);
+}
+.btn-neutral:hover {
+  background-color: #afafaf;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header>button:hover {
-  background: #218838;
+/* 2. Botões Secundários (Editar/Excluir) - AGORA COLORIDOS */
+
+/* Botão de Edição (Cor: Amarelo/Laranja Pastel) */
+.btn-edit {
+  background-color: var(--color-edit);
+  color: #9a6700; /* Texto escuro para contraste */
+}
+.btn-edit:hover {
+  background-color: #f7dd9b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Botão de Excluir (Cor: Vermelho Pastel) */
+.btn-delete {
+  background-color: var(--color-danger);
+  color: #932c2c; /* Texto escuro para contraste */
+}
+.btn-delete:hover {
+  background-color: #f08b8b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para o Modal (Opcional, mas útil para o look and feel) */
+/* Se você tiver o TaskFormComponent usando um modal, adicione estilos básicos aqui: */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }

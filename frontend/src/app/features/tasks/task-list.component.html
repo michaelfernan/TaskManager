@@ -1,55 +1,72 @@
-<div class="header">
-  <h2>Tarefas</h2>
-  <button (click)="openCreate()">+ Nova</button>
-</div>
+<div class="main-container">
+  <div class="header">
+    <h2>✨ Minhas Tarefas</h2>
+    <button class="btn-primary" (click)="openCreate()">+ Nova</button>
+  </div>
 
-<div class="controls">
-  <select [(ngModel)]="filterStatus" (change)="refresh()">
-    <option value="ALL">Status: Todos</option>
-    <option value="PENDING">Status: Pendentes</option>
-    <option value="DONE">Status: Concluídas</option>
-  </select>
+  <div class="controls-panel">
+    <select [(ngModel)]="filterStatus" (change)="refresh()" class="control-select">
+      <option value="ALL">Status: Todos</option>
+      <option value="PENDING">Status: Pendentes</option>
+      <option value="DONE">Status: Concluídas</option>
+    </select>
 
-  <select [(ngModel)]="filterPriority" (change)="refresh()">
-    <option value="ALL">Prioridade: Todas</option>
-    <option value="LOW">Prioridade: Baixa</option>
-    <option value="MEDIUM">Prioridade: Média</option>
-    <option value="HIGH">Prioridade: Alta</option>
-  </select>
+    <select [(ngModel)]="filterPriority" (change)="refresh()" class="control-select">
+      <option value="ALL">Prioridade: Todas</option>
+      <option value="LOW">Prioridade: Baixa</option>
+      <option value="MEDIUM">Prioridade: Média</option>
+      <option value="HIGH">Prioridade: Alta</option>
+    </select>
 
-  <select [(ngModel)]="sortBy" (change)="refresh()">
-    <option value="createdAt">Ordenar por: Data</option>
-    <option value="priority">Ordenar por: Prioridade</option>
-    <option value="title">Ordenar por: Título</option>
-  </select>
-</div>
-<div *ngIf="loading" class="loading-message">Carregando...</div>
-<ul *ngIf="!loading && data.items.length > 0" class="task-list">
-  <li *ngFor="let t of data.items" class="task-card">
-    <div>
-      <h4 [style.opacity]="t.done ? 0.6 : 1">{{ t.title }}</h4>
-      <p *ngIf="t.description" class="task-description">{{ t.description }}</p>
-      <small>
-        Criado em: {{ t.createdAt | date:'short' }}
-      </small>
-      <span class="badge" [ngClass]="t.priority.toLowerCase()">
-        {{ t.priority }}
-      </span>
-      <span class="badge" [ngClass]="t.done ? 'done-status' : 'pending-status'">
-        {{ t.done ? 'CONCLUÍDA' : 'PENDENTE' }}
-      </span>
-    </div>
-    <div class="actions">
-      <button (click)="toggleDone(t)">
-        {{ t.done ? 'Marcar Pendente' : 'Marcar Concluída' }}
-      </button>
-      <button (click)="editTask(t)">Editar</button>
-      <button (click)="confirmDelete(t)">Excluir</button>
-    </div>
-  </li>
-</ul>
-<div *ngIf="!loading && data.items.length === 0" class="empty">
-  Nenhuma tarefa. Crie uma nova para começar!
+    <select [(ngModel)]="sortBy" (change)="refresh()" class="control-select">
+      <option value="createdAt">Ordenar por: Data</option>
+      <option value="priority">Ordenar por: Prioridade</option>
+      <option value="title">Ordenar por: Título</option>
+    </select>
+  </div>
+  <div *ngIf="loading" class="loading-message">Carregando...</div>
+
+  <ul *ngIf="!loading && data.items.length > 0" class="task-list">
+    <li *ngFor="let t of data.items" class="task-card" [class.is-done]="t.done">
+      <div class="task-details">
+        <h4 class="task-title">{{ t.title }}</h4>
+        <p *ngIf="t.description" class="task-description">{{ t.description }}</p>
+        <div class="task-meta">
+          <span class="badge priority-badge" [ngClass]="t.priority.toLowerCase()">
+            {{ t.priority }}
+          </span>
+          <span class="badge status-badge" [ngClass]="t.done ? 'done' : 'pending'">
+            {{ t.done ? 'CONCLUÍDA' : 'PENDENTE' }}
+          </span>
+          <small class="creation-date">
+            Criado em: {{ t.createdAt | date:'short' }}
+          </small>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button
+          (click)="toggleDone(t)"
+          [class.btn-success]="!t.done"
+          [class.btn-neutral]="t.done"
+          class="action-button"
+        >
+          {{ t.done ? '↩️ Reabrir' : '✅ Concluir' }}
+        </button>
+
+        <button (click)="editTask(t)" class="action-button btn-soft btn-edit">
+          ✏️ Editar
+        </button>
+        <button (click)="confirmDelete(t)" class="action-button btn-soft btn-delete">
+          🗑️ Excluir
+        </button>
+      </div>
+    </li>
+  </ul>
+
+  <div *ngIf="!loading && data.items.length === 0" class="empty-message">
+    Nenhuma tarefa encontrada.
+  </div>
 </div>
 <app-task-form *ngIf="modalOpen" [editing]="!!editingTask" [task]="editingTask" (saved)="refresh()"
   (closed)="modalOpen = false">

@@ -34,7 +34,7 @@ services:
       ME_CONFIG_BASICAUTH: "false"
 
   backend:
-    build: ./task            # 👈 isso precisa estar exatamente assim
+    build: ./task
     container_name: tizaa-backend
     restart: unless-stopped
     depends_on:
@@ -48,9 +48,34 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./task:/app          # 👈 monta o código fonte
+      - ./task:/app
       - /app/node_modules
     command: npm run start:dev
+    # opcional:
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 10
+    #   start_period: 20s
+
+  frontend:
+    build: ./frontend
+    container_name: tizaa-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      NG_CLI_ANALYTICS: "ci"
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: >
+      sh -c "npm start -- --host 0.0.0.0 --port 4200 --poll 2000"
 
 volumes:
   mongo_data:

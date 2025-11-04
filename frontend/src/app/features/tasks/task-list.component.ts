@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskService, TaskList, Task } from './task.service';
 import { TaskFormComponent } from './task-form.component';
+import { ToastService } from '../../core/toast.service';
+
 
 @Component({
   selector: 'app-task-list',
@@ -22,7 +24,7 @@ export class TaskListComponent implements OnInit {
   filterPriority: 'ALL' | Task['priority'] = 'ALL';
   sortBy: 'createdAt' | 'priority' | 'title' = 'createdAt';
 
-  constructor(private svc: TaskService) {}
+  constructor(private svc: TaskService, private toast: ToastService) {}
 
   ngOnInit() {
     console.log('TaskListComponent inicializado. Carregando tarefas...');
@@ -80,7 +82,8 @@ export class TaskListComponent implements OnInit {
       error: (err) => {
         console.error('❌ Erro ao carregar tarefas:', err);
         this.loading = false;
-        alert('Erro ao carregar a lista de tarefas.');
+        // 🎯 SUBSTITUÍDO: alert()
+        this.toast.show('Não foi possível carregar as tarefas.', 'error', 5000);
       },
     });
   }
@@ -94,7 +97,6 @@ export class TaskListComponent implements OnInit {
     this.editingTask = task;
     this.modalOpen = true;
   }
-
 
   toggleDone(task: Task) {
     const newStatus = !task.done;
@@ -113,7 +115,11 @@ export class TaskListComponent implements OnInit {
     this.svc.update(task.id, inputForUpdate).subscribe({
       next: () => {
         console.log(`✅ Sucesso! Tarefa ${task.id} atualizada.`);
-        alert(`Tarefa marcada como ${newStatus ? 'Concluída' : 'Pendente'}!`);
+        // 🎯 SUBSTITUÍDO: alert()
+        this.toast.show(
+          `Tarefa marcada como ${newStatus ? 'Concluída' : 'Pendente'}!`,
+          'success'
+        );
         this.refresh();
       },
       error: (err) => {
@@ -121,24 +127,34 @@ export class TaskListComponent implements OnInit {
           '❌ ERRO AO ATUALIZAR STATUS DA TAREFA! Verifique a resposta do servidor:',
           err
         );
-        alert('Erro ao atualizar status da tarefa.');
+        // 🎯 SUBSTITUÍDO: alert()
+        this.toast.show('Erro ao atualizar status da tarefa.', 'error');
         this.loading = false;
       },
     });
   }
 
   confirmDelete(task: Task) {
+    // 🎯 SUBSTITUÍDO: confirm()
+    // Como não criamos um Modal de Confirmação customizado, vamos manter o 'confirm' nativo,
+    // mas substituímos o 'alert' de sucesso por um Toast.
+
     if (confirm(`Tem certeza que deseja excluir a tarefa "${task.title}"?`)) {
       this.loading = true;
       this.svc.remove(task.id).subscribe({
         next: () => {
           console.log(`Tarefa ${task.id} excluída.`);
-          alert('Tarefa excluída!');
+          // 🎯 SUBSTITUÍDO: alert()
+          this.toast.show(
+            `🗑️ Tarefa "${task.title}" excluída com sucesso!`,
+            'info'
+          );
           this.refresh();
         },
         error: (err) => {
           console.error('❌ Erro ao excluir tarefa:', err);
-          alert('Erro ao excluir tarefa.');
+          // 🎯 SUBSTITUÍDO: alert()
+          this.toast.show('Erro ao excluir tarefa.', 'error');
           this.loading = false;
         },
       });

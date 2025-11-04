@@ -1,4 +1,3 @@
-// task.dto.ts
 import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { IsBoolean, IsEnum, IsOptional, IsString, Length } from 'class-validator';
 import { Task } from './task.entity';

@@ -1,0 +1,54 @@
+/* src/app/shared/toast/toast.component.css */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 250px;
+  max-width: 90%;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10000;
+  /* Garante que fique acima de tudo */
+  opacity: 0.95;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.toast-text {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1em;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.5em;
+  line-height: 1;
+  margin-left: 15px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.close-button:hover {
+  opacity: 1;
+}
+
+.toast-container.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.toast-container.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.toast-container.info {
+  background-color: #cce5ff;
+}
