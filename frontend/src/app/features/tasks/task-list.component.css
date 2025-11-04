@@ -1,7 +1,8 @@
-.header {
+ .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .task-list {
@@ -24,20 +25,76 @@
   border-radius: 6px;
   font-size: 12px;
   margin-left: 8px;
+  font-weight: 500;
 }
 
+/* Estilos de Prioridade */
 .badge.low {
   background: #c8f7c5;
+  /* Verde claro */
 }
 
 .badge.medium {
   background: #fff6c5;
+  /* Amarelo claro */
 }
 
 .badge.high {
   background: #f7c5c5;
+  /* Vermelho claro */
+}
+
+/* Estilos de Status (Novo) */
+.badge.done-status {
+  background: #d4edda;
+  /* Verde sutil */
+  color: #155724;
+}
+
+.badge.pending-status {
+  background: #ffeeba;
+  /* Amarelo sutil */
+  color: #856404;
 }
 
 .actions button {
   margin-left: 6px;
+}
+
+/* Estilos para o bloco de Controles/Filtros (Novo) */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+}
+
+.controls select,
+.controls button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.controls select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.header>button {
+  background: #28a745;
+  color: white;
+  font-weight: bold;
+}
+
+.header>button:hover {
+  background: #218838;
 }

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TaskService, TaskList, Task } from './task.service';
 import { TaskFormComponent } from './task-form.component';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
- imports: [CommonModule, TaskFormComponent],
+  imports: [CommonModule, TaskFormComponent, FormsModule],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css'],
 })
@@ -17,56 +18,126 @@ export class TaskListComponent implements OnInit {
   modalOpen = false;
   editingTask?: Task;
 
+  filterStatus: 'ALL' | 'PENDING' | 'DONE' = 'ALL';
+  filterPriority: 'ALL' | Task['priority'] = 'ALL';
+  sortBy: 'createdAt' | 'priority' | 'title' = 'createdAt';
+
   constructor(private svc: TaskService) {}
 
   ngOnInit() {
+    console.log('TaskListComponent inicializado. Carregando tarefas...');
     this.refresh();
   }
-
 
   refresh() {
     this.loading = true;
     this.modalOpen = false;
 
+    console.log(
+      `Aplicando filtros: Status=${this.filterStatus}, Prioridade=${this.filterPriority}, Ordem=${this.sortBy}`
+    );
+
     this.svc.list().subscribe({
-      next: (data) => {
-        this.data = data;
+      next: (fullData) => {
+        let filteredItems = fullData.items;
+
+        // 1. FILTRO POR STATUS
+        if (this.filterStatus !== 'ALL') {
+          const isDone = this.filterStatus === 'DONE';
+          filteredItems = filteredItems.filter((t) => t.done === isDone);
+        }
+
+        // 2. FILTRO POR PRIORIDADE
+        if (this.filterPriority !== 'ALL') {
+          filteredItems = filteredItems.filter(
+            (t) => t.priority === this.filterPriority
+          );
+        }
+
+        // 3. ORDENAÇÃO
+        filteredItems = [...filteredItems];
+
+        filteredItems.sort((a, b) => {
+          if (this.sortBy === 'createdAt') {
+            const dateA = new Date(a.createdAt ?? '').getTime();
+            const dateB = new Date(b.createdAt ?? '').getTime();
+            return dateB - dateA;
+          } else if (this.sortBy === 'priority') {
+            const priorityOrder = { HIGH: 3, MEDIUM: 2, LOW: 1 };
+            return priorityOrder[b.priority] - priorityOrder[a.priority];
+          } else if (this.sortBy === 'title') {
+            return a.title.localeCompare(b.title);
+          }
+          return 0;
+        });
+
+        this.data = { items: filteredItems, total: filteredItems.length };
         this.loading = false;
+        console.log(
+          `Tarefas carregadas e filtradas. Total visível: ${this.data.items.length}`
+        );
       },
       error: (err) => {
-        console.error('Erro ao carregar tarefas:', err);
+        console.error('❌ Erro ao carregar tarefas:', err);
         this.loading = false;
         alert('Erro ao carregar a lista de tarefas.');
       },
     });
   }
+
   openCreate() {
     this.editingTask = undefined;
     this.modalOpen = true;
   }
 
-  /**
-   * Abre o modal para editar uma tarefa existente.
-   * @param task A tarefa a ser editada.
-   */
   editTask(task: Task) {
     this.editingTask = task;
     this.modalOpen = true;
   }
 
-  /**
-   * Solicita confirmação e remove a tarefa.
-   * @param task A tarefa a ser removida.
-   */
+
+  toggleDone(task: Task) {
+    const newStatus = !task.done;
+    this.loading = true;
+
+    const inputForUpdate = { done: newStatus };
+
+    console.log(
+      `Tentando atualizar tarefa ID ${task.id}. Novo status 'done': ${newStatus}`
+    );
+    console.log(
+      'Objeto de INPUT sendo enviado ao Service (Apenas done):',
+      inputForUpdate
+    );
+
+    this.svc.update(task.id, inputForUpdate).subscribe({
+      next: () => {
+        console.log(`✅ Sucesso! Tarefa ${task.id} atualizada.`);
+        alert(`Tarefa marcada como ${newStatus ? 'Concluída' : 'Pendente'}!`);
+        this.refresh();
+      },
+      error: (err) => {
+        console.error(
+          '❌ ERRO AO ATUALIZAR STATUS DA TAREFA! Verifique a resposta do servidor:',
+          err
+        );
+        alert('Erro ao atualizar status da tarefa.');
+        this.loading = false;
+      },
+    });
+  }
+
   confirmDelete(task: Task) {
     if (confirm(`Tem certeza que deseja excluir a tarefa "${task.title}"?`)) {
       this.loading = true;
       this.svc.remove(task.id).subscribe({
         next: () => {
+          console.log(`Tarefa ${task.id} excluída.`);
           alert('Tarefa excluída!');
           this.refresh();
         },
-        error: () => {
+        error: (err) => {
+          console.error('❌ Erro ao excluir tarefa:', err);
           alert('Erro ao excluir tarefa.');
           this.loading = false;
         },
