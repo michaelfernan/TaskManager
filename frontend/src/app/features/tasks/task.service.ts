@@ -90,7 +90,6 @@ export class TaskService {
       .query<{ tasks: TaskList }>({
         query: TASKS,
         variables: { skip, take },
-        // fetchPolicy: 'network-only', // opcional
       })
       .pipe(
         map((res) => {

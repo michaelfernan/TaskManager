@@ -12,7 +12,6 @@
   justify-content: space-between;
   align-items: center;
   z-index: 10000;
-  /* Garante que fique acima de tudo */
   opacity: 0.95;
   transition: opacity 0.3s ease-in-out;
 }
