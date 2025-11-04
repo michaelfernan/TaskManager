@@ -16,12 +16,19 @@ Este projeto é um **teste técnico** completo com arquitetura full stack usando
 ### 1️⃣ Clonar o repositório
 ```bash
 git clone <url-do-repositorio>
-cd tizaa
+cd TaskManager
 ```
 
-### 2️⃣ Subir os containers
+
+```
+⚙️ **Pré-requisitos**
+- Docker instalado  
+- Docker em execução (`docker ps` deve funcionar sem erro)
+
+### 🚀 Subir os containers
 ```bash
 docker compose up -d --build
+
 ```
 
 ### 3️⃣ Acessar os serviços
