@@ -1,0 +1,37 @@
+<div class="header">
+  <h2>Tarefas</h2>
+  <button (click)="openCreate()">+ Nova</button>
+</div>
+
+<div *ngIf="loading" class="loading-message">Carregando...</div>
+
+<ul *ngIf="!loading && data.items.length > 0" class="task-list">
+  <li *ngFor="let t of data.items" class="task-card">
+    <div>
+      <h4 [style.opacity]="t.done ? 0.6 : 1">{{ t.title }}</h4>
+
+      <p *ngIf="t.description" class="task-description">{{ t.description }}</p>
+
+      <small>
+        Criado em: {{ t.createdAt | date:'short' }}
+      </small>
+
+      <span class="badge" [ngClass]="t.priority.toLowerCase()">
+        {{ t.priority }}
+      </span>
+    </div>
+
+    <div class="actions">
+      <button (click)="editTask(t)">Editar</button>
+      <button (click)="confirmDelete(t)">Excluir</button>
+    </div>
+  </li>
+</ul>
+
+<div *ngIf="!loading && data.items.length === 0" class="empty">
+  Nenhuma tarefa. Crie uma nova para começar!
+</div>
+
+<app-task-form *ngIf="modalOpen" [editing]="!!editingTask" [task]="editingTask" (saved)="refresh()"
+  (closed)="modalOpen = false">
+</app-task-form>

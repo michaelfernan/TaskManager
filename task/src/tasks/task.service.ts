@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
-import { CreateTaskInput, UpdateTaskInput } from './task.dto';
+import { CreateTaskInput, UpdateTaskInput, TaskPriority } from './task.dto';
 import { Task } from './task.entity';
 
 @Injectable()
@@ -23,16 +23,52 @@ export class TaskService {
     return new ObjectId(id);
   }
 
+  /** Permite apenas campos atualizáveis e ignora null/undefined */
   private sanitizeUpdate(input: UpdateTaskInput): Record<string, any> {
+    const allowed: (keyof UpdateTaskInput)[] = [
+      'title',
+      'description',
+      'done',
+      'priority',
+    ];
     const out: Record<string, any> = {};
-    for (const [k, v] of Object.entries(input)) {
+    for (const k of allowed) {
+      const v = input[k];
       if (v !== undefined && v !== null) out[k] = v;
     }
     return out;
   }
 
+  /** Valida enum de prioridade vindo no DTO */
+  private ensureValidPriority(priority?: any): TaskPriority | undefined {
+    if (priority === undefined) return undefined;
+    const values = Object.values(TaskPriority);
+    if (!values.includes(priority)) {
+      throw new BadRequestException(
+        `Invalid priority. Use one of: ${values.join(', ')}`,
+      );
+    }
+    return priority as TaskPriority;
+  }
+
   async create(input: CreateTaskInput): Promise<Task> {
-    const task = this.repo.create({ ...input, done: false });
+    const priority = this.ensureValidPriority(
+      input.priority ?? TaskPriority.MEDIUM,
+    );
+
+    // Como Mongo + updateOne/save podem não disparar os decorators de data,
+    // setamos createdAt/updatedAt por segurança.
+    const now = new Date();
+
+    const task = this.repo.create({
+      title: input.title,
+      description: input.description ?? null,
+      done: input.done ?? false,
+      priority: priority ?? TaskPriority.MEDIUM,
+      createdAt: now,
+      updatedAt: now,
+    } as Task);
+
     return await this.repo.save(task);
   }
 
@@ -41,7 +77,8 @@ export class TaskService {
     take = 20,
   ): Promise<{ items: Task[]; total: number }> {
     const [items, total] = await Promise.all([
-      this.repo.find({ skip, take, order: { createdAt: 'desc' as const } }),
+      // "entra embaixo": ordena por createdAt ASC
+      this.repo.find({ skip, take, order: { createdAt: 'asc' as const } }),
       this.repo.count(),
     ]);
     return { items, total };
@@ -60,19 +97,23 @@ export class TaskService {
     const existing = await this.repo.findOneBy({ _id } as any);
     if (!existing) throw new NotFoundException('Task not found');
 
+    // valida prioridade se vier
+    if (input.priority !== undefined) this.ensureValidPriority(input.priority);
+
     const $set = this.sanitizeUpdate(input);
+
+    // se nada pra atualizar, retorna o existente mesmo
     if (Object.keys($set).length === 0) {
       return existing;
     }
 
+    // garantir updatedAt, pois updateOne não dispara @UpdateDateColumn
+    $set.updatedAt = new Date();
+
     await this.repo.updateOne({ _id } as any, { $set });
 
-    // --- aqui está o ajuste ---
     const updated = await this.repo.findOneBy({ _id } as any);
-    if (!updated) {
-      // extremamente improvável, mas deixa o TS feliz e cobre race conditions
-      throw new NotFoundException('Task not found after update');
-    }
+    if (!updated) throw new NotFoundException('Task not found after update');
     return updated;
   }
 

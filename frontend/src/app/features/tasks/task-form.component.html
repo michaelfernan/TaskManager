@@ -1,0 +1,30 @@
+<div class="modal-backdrop" *ngIf="showModal"></div>
+
+<div class="modal" *ngIf="showModal">
+  <h2 *ngIf="!editing">Nova Tarefa</h2>
+  <h2 *ngIf="editing">Editar Tarefa</h2>
+
+  <form (ngSubmit)="save()" class="form">
+    <label>
+      Título *
+      <input type="text" [(ngModel)]="model.title" name="title" required />
+    </label>
+
+    <label>
+      Descrição
+      <textarea [(ngModel)]="model.description" name="description" rows="3"></textarea>
+    </label>
+
+    <label>Prioridade</label>
+    <div class="priority">
+      <label><input type="radio" [(ngModel)]="model.priority" name="priority" value="LOW" /> Baixa</label>
+      <label><input type="radio" [(ngModel)]="model.priority" name="priority" value="MEDIUM" /> Média</label>
+      <label><input type="radio" [(ngModel)]="model.priority" name="priority" value="HIGH" /> Alta</label>
+    </div>
+
+    <div class="actions">
+      <button type="submit" [disabled]="loading">{{ editing ? 'Salvar' : 'Criar' }}</button>
+      <button type="button" class="cancel" (click)="closeModal()">Cancelar</button>
+    </div>
+  </form>
+</div>

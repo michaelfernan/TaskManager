@@ -1,0 +1,59 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+}
+
+.modal {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 6px 24px rgba(0,0,0,.15);
+}
+
+.form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form input[type="text"],
+.form textarea {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.priority {
+  display: flex;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  background: #007bff;
+  color: white;
+}
+
+button.cancel {
+  background: #e0e0e0;
+}
