@@ -1,0 +1,4 @@
+{
+  "/tasks":   { "target": "http://backend:3000", "secure": false, "changeOrigin": true },
+  "/graphql": { "target": "http://backend:3000", "secure": false, "changeOrigin": true }
+}
