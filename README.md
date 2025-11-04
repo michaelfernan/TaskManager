@@ -15,7 +15,7 @@ Este projeto é um **teste técnico** completo com arquitetura full stack usando
 
 ### 1️⃣ Clonar o repositório
 ```bash
-git clone <url-do-repositorio>
+git clone git@github.com:michaelfernan/TaskManager.git
 cd TaskManager
 ```
 
