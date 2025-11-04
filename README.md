@@ -35,9 +35,8 @@ docker compose up -d --build
 | Serviço | Porta | URL |
 |----------|--------|-----|
 | Frontend (Angular) | 4200 | http://localhost:4200 |
-| Backend (NestJS REST) | 3000 | http://localhost:3000 |
 | GraphQL Playground | 3000 | http://localhost:3000/graphql |
-| Swagger API Docs | 3000 | http://localhost:3000/api |
+| Swagger API Docs | 3000 |http://localhost:3000/api/docs#/ |
 | Mongo Express | 8081 | http://localhost:8081 |
 
 ### 4️⃣ Encerrar containers
